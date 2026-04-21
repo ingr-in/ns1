@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ingr App</title>
+</head>
+<body>
+
+<h2>User List</h2>
+<button onclick="loadData()">Load</button>
+
+<div id="output"></div>
+
+<script>
+function loadData() {
+  fetch("https://sipa.ingr.in/api.php")
+    .then(res => res.json())
+    .then(data => {
+      let out = "";
+      data.forEach(user => {
+        out += user.name + "<br>";
+      });
+      document.getElementById("output").innerHTML = out;
+    });
+}
+</script>
+
+</body>
+</html>
