@@ -4,28 +4,18 @@
     <title>User List App</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: Arial;
             margin: 20px;
-            padding: 20px;
         }
         button {
             padding: 10px 20px;
-            font-size: 16px;
-            background-color: #007bff;
+            background: #007bff;
             color: white;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
         }
         #output {
             margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
         }
         .user-item {
             padding: 8px;
@@ -33,7 +23,6 @@
         }
         .error {
             color: red;
-            font-weight: bold;
         }
     </style>
 </head>
@@ -45,53 +34,53 @@
 <div id="output"></div>
 
 <script>
+async function fetchUsers(url) {
+    const res = await fetch(url);
+    if (!res.ok) {
+        throw new Error("HTTP error: " + res.status);
+    }
+    return res.json();
+}
+
 async function loadData() {
     const outputDiv = document.getElementById("output");
-    
-    // Show loading state
     outputDiv.innerHTML = "Loading users...";
-    
-   /* try {
-        const response = await fetch("https://sipa.ingr.in/api.php");
-        
-        // Check if response is OK
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        
-        // Clear output
-        let out = "";
-        
-        // Check if data is an array
-        if (Array.isArray(data) && data.length > 0) {
-            out = "<h3>User List:</h3>";
-            data.forEach(user => {
-                out += `<div class="user-item">`;
-                out += `<strong>${user.name}</strong>`;
-                if (user.email) {
-                    out += ` (${user.email})`;
-                }
-                out += `</div>`;
-            });
-        } else {
-            out = `<div class="error">No users found or unexpected data format.</div>`;
-            out += `<pre>Received: ${JSON.stringify(data, null, 2)}</pre>`;
-        }*/
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-const apiUrl = 'https://sipa.ingr.in/api.php';
 
-fetch(proxyUrl + apiUrl)
-    .then(res => res.json())
-    .then(data => console.log(data));
-        
-        outputDiv.innerHTML = out;
-        
-    } catch (error) {
-        console.error("Error:", error);
-        outputDiv.innerHTML = `<div class="error">Failed to load data: ${error.message}</div>`;
+    const apiUrl = "https://sipa.ingr.in/api.php";
+    const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+
+    let data;
+
+    try {
+        // ✅ First try direct API
+        data = await fetchUsers(apiUrl);
+    } catch (err) {
+        console.warn("Direct API failed, trying proxy...");
+        try {
+            // 🔁 Fallback to proxy
+            data = await fetchUsers(proxyUrl + apiUrl);
+        } catch (err2) {
+            outputDiv.innerHTML = `<div class="error">Failed to load data</div>`;
+            return;
+        }
     }
+
+    // ✅ Display data
+    let out = "";
+
+    if (Array.isArray(data) && data.length > 0) {
+        out = "<h3>User List:</h3>";
+        data.forEach(user => {
+            out += `<div class="user-item">
+                        <strong>${user.name}</strong> 
+                        ${user.email ? "(" + user.email + ")" : ""}
+                    </div>`;
+        });
+    } else {
+        out = `<div class="error">No users found</div>`;
+    }
+
+    outputDiv.innerHTML = out;
 }
 </script>
 
