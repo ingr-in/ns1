@@ -51,7 +51,7 @@ async function loadData() {
     // Show loading state
     outputDiv.innerHTML = "Loading users...";
     
-    try {
+   /* try {
         const response = await fetch("https://sipa.ingr.in/api.php");
         
         // Check if response is OK
@@ -78,7 +78,13 @@ async function loadData() {
         } else {
             out = `<div class="error">No users found or unexpected data format.</div>`;
             out += `<pre>Received: ${JSON.stringify(data, null, 2)}</pre>`;
-        }
+        }*/
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+const apiUrl = 'https://sipa.ingr.in/api.php';
+
+fetch(proxyUrl + apiUrl)
+    .then(res => res.json())
+    .then(data => console.log(data));
         
         outputDiv.innerHTML = out;
         
