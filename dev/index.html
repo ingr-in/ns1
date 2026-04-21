@@ -1,30 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>User List App</title>
-    <style>
-        body {
-            font-family: Arial;
-            margin: 20px;
-        }
-        button {
-            padding: 10px 20px;
-            background: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        #output {
-            margin-top: 20px;
-        }
-        .user-item {
-            padding: 8px;
-            border-bottom: 1px solid #eee;
-        }
-        .error {
-            color: red;
-        }
-    </style>
+    <title>User List App</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #output {
+            margin-top: 20px;
+        }
+        .user-item {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .error {
+            color: red;
+        }
+    </style>
 </head>
 <body>
 
@@ -35,52 +35,52 @@
 
 <script>
 async function fetchUsers(url) {
-    const res = await fetch(url);
-    if (!res.ok) {
-        throw new Error("HTTP error: " + res.status);
-    }
-    return res.json();
+    const res = await fetch(url);
+    if (!res.ok) {
+        throw new Error("HTTP error: " + res.status);
+    }
+    return res.json();
 }
 
 async function loadData() {
-    const outputDiv = document.getElementById("output");
-    outputDiv.innerHTML = "Loading users...";
+    const outputDiv = document.getElementById("output");
+    outputDiv.innerHTML = "Loading users...";
 
-    const apiUrl = "https://sipa.ingr.in/api.php";
-    const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+    const apiUrl = "netlify/functions/api.js";
+    const proxyUrl = "https://cors-anywhere.herokuapp.com/";
 
-    let data;
+    let data;
 
-    try {
-        // ✅ First try direct API
-        data = await fetchUsers(apiUrl);
-    } catch (err) {
-        console.warn("Direct API failed, trying proxy...");
-        try {
-            // 🔁 Fallback to proxy
-            data = await fetchUsers(proxyUrl + apiUrl);
-        } catch (err2) {
-            outputDiv.innerHTML = `<div class="error">Failed to load data</div>`;
-            return;
-        }
-    }
+    try {
+        // ✅ First try direct API
+        data = await fetchUsers(apiUrl);
+    } catch (err) {
+        console.warn("Direct API failed, trying proxy...");
+        try {
+            // 🔁 Fallback to proxy
+            data = await fetchUsers(proxyUrl + apiUrl);
+        } catch (err2) {
+            outputDiv.innerHTML = `<div class="error">Failed to load data</div>`;
+            return;
+        }
+    }
 
-    // ✅ Display data
-    let out = "";
+    // ✅ Display data
+    let out = "";
 
-    if (Array.isArray(data) && data.length > 0) {
-        out = "<h3>User List:</h3>";
-        data.forEach(user => {
-            out += `<div class="user-item">
-                        <strong>${user.name}</strong> 
-                        ${user.email ? "(" + user.email + ")" : ""}
-                    </div>`;
-        });
-    } else {
-        out = `<div class="error">No users found</div>`;
-    }
+    if (Array.isArray(data) && data.length > 0) {
+        out = "<h3>User List:</h3>";
+        data.forEach(user => {
+            out += `<div class="user-item">
+                        <strong>${user.name}</strong> 
+                        ${user.email ? "(" + user.email + ")" : ""}
+                    </div>`;
+        });
+    } else {
+        out = `<div class="error">No users found</div>`;
+    }
 
-    outputDiv.innerHTML = out;
+    outputDiv.innerHTML = out;
 }
 </script>
 
