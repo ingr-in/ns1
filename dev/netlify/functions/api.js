@@ -1,17 +1,28 @@
 exports.handler = async function () {
     try {
-        const res = await fetch("https://sipa.ingr.in/api.php", {
+        const response = await fetch("https://sipa.ingr.in/api.php", {
+            method: "GET",
             headers: {
-                "User-Agent": "Mozilla/5.0"
+                "User-Agent": "Mozilla/5.0",
+                "Accept": "application/json",
+                "Referer": "https://su.ru.ingr.in/"
             }
         });
 
-        const data = await res.text();
+        if (!response.ok) {
+            return {
+                statusCode: response.status,
+                body: "Error from API: " + response.status
+            };
+        }
+
+        const data = await response.text();
 
         return {
             statusCode: 200,
             headers: {
-                "Access-Control-Allow-Origin": "*"
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json"
             },
             body: data
         };
